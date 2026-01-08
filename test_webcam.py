@@ -25,7 +25,7 @@ if not cap.isOpened():
     print("Could not open webcam")
     exit()
 
-interval = 20
+interval = 5
 last_capture_time = time.time()
 image_num = 0
 

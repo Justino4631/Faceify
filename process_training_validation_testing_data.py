@@ -2,7 +2,7 @@ import os, shutil, random
 
 source = "edited_images"
 dest = "dataset"
-splits = {"train": 0.65, "val": 0.2, "test": 0.15}
+splits = {"train": 0.8, "val": 0.1, "test": 0.1}
 
 classes = os.listdir(source)
 
