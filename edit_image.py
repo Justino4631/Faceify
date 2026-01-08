@@ -13,7 +13,7 @@ function_mapping = {
     9: rotate_image
 }
 
-image = Image.open("test_images/TimRobinson2.jpg")
+image = Image.open("test_images/JustinBaratta3.jpg")
 print(image.format)
 print(image.size)
 print(image.mode)
@@ -52,4 +52,4 @@ for operation in operations:
             case "9":
                 pixel_array = rotate_image(pixel_array, angle=r.uniform(-8, 8))
 
-    cv2.imwrite(f"edited_images/TimRobinson/TimRobinson2_{operation}.jpg", pixel_array)
+    cv2.imwrite(f"edited_images/JustinBaratta/JustinBaratta3_{operation}.jpg", pixel_array)

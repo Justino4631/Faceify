@@ -6,29 +6,31 @@ from model import Model
 from model import get_classes
 import numpy as np
 from image_filters import crop_image, convert_to_grayscale
-classes = get_classes()
-device = "cuda" if torch.cuda.is_available() else "cpu"
 
-model = Model().to(device)
-model.load_state_dict(torch.load("model.pth", map_location=device))
-model.eval()
+def predict_face(img):
+    classes = get_classes()
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 
-transform = transforms.Compose([
-    transforms.Grayscale(num_output_channels=1),
-    transforms.Resize((128, 128)),
-    transforms.ToTensor()
-])
+    model = Model().to(device)
+    model.load_state_dict(torch.load("model.pth", map_location=device))
+    model.eval()
 
-img = Image.open(input("Enter filepath and filename (ex. evaluate_images/AdamSandler.jpg): "))
-rgb_array = np.asarray(img)
-grayscale_cropped = crop_image(convert_to_grayscale(rgb_array))
+    transform = transforms.Compose([
+        transforms.Grayscale(num_output_channels=1),
+        transforms.Resize((128, 128)),
+        transforms.ToTensor()
+    ])
 
-tensor = torch.from_numpy(grayscale_cropped).float().unsqueeze(0).unsqueeze(0).to(device)
+    img = Image.open(img)
+    rgb_array = np.asarray(img)
+    grayscale_cropped = crop_image(convert_to_grayscale(rgb_array))
 
-with torch.no_grad():
-    output = model(tensor)
-    print(output)
-    pred = torch.argmax(output, dim=1)
-    pred = classes[pred.item()]
+    tensor = torch.from_numpy(grayscale_cropped).float().unsqueeze(0).unsqueeze(0).to(device)
 
-print(pred)
+    with torch.no_grad():
+        output = model(tensor)
+        print(output)
+        pred = torch.argmax(output, dim=1)
+        pred = classes[pred.item()]
+
+    return pred
