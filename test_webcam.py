@@ -7,6 +7,7 @@ import time
 import threading
 
 def speak(text):
+    print(text)
     engine = pyttsx3.init()
 
     engine.setProperty('rate', 180)
@@ -25,7 +26,7 @@ if not cap.isOpened():
     print("Could not open webcam")
     exit()
 
-interval = 20
+interval = 5
 last_capture_time = time.time()
 image_num = 0
 
@@ -43,15 +44,22 @@ while True:
         last_capture_time = current_time
 
         image_num += 1
-        filename = f"screenshots/Screenshot{image_num}.jpg"
+        filename = f"running_screenshots/Screenshot{image_num}.jpg"
         cv2.imwrite(filename, frame)
         face_prediction = predict_face(f"{filename}")
 
-        threading.Thread(
-            target=speak,
-            args=(f"{face_prediction} detected",),
-            daemon=True
-        ).start()
+        if face_prediction is not None:
+            threading.Thread(
+                target=speak,
+                args=(f"{face_prediction} detected",),
+                daemon=True
+            ).start()
+        else:
+            threading.Thread(
+                target=speak,
+                args=(f"No one detected",),
+                daemon=True
+            ).start()
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

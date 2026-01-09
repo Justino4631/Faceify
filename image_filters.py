@@ -33,34 +33,39 @@ def change_brightness(rgb_array:np.ndarray, n=0, k=1) -> np.ndarray:
     return brightness_changed_img.astype(np.uint8)
 
 def crop_image(grayscale_array:np.ndarray) -> np.ndarray:
-    grayscale_array = np.squeeze(grayscale_array, axis=2)
 
-    #Use Haar cascades to find the boundary box for a face
-    face_cascade = cv2.CascadeClassifier(
-        cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-    )
-    faces = face_cascade.detectMultiScale(
-        grayscale_array,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(40, 40)
-    )
-    x, y, w, h = max(faces, key=lambda b: b[2] * b[3])
+    try:
+        grayscale_array = np.squeeze(grayscale_array, axis=2)
 
-    padding = 0.2 #20% padding, or 20% more width and height than boundary box shows
+        #Use Haar cascades to find the boundary box for a face
+        face_cascade = cv2.CascadeClassifier(
+            cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+        )
+        faces = face_cascade.detectMultiScale(
+            grayscale_array,
+            scaleFactor=1.1,
+            minNeighbors=5,
+            minSize=(40, 40)
+        )
+        x, y, w, h = max(faces, key=lambda b: b[2] * b[3])
 
-    x_pad = int(w * padding)
-    y_pad = int(h * padding)
+        padding = 0.2 #20% padding, or 20% more width and height than boundary box shows
 
-    x1 = max(0, x - x_pad)
-    y1 = max(0, y - y_pad)
-    x2 = min(grayscale_array.shape[1], x + w + x_pad)
-    y2 = min(grayscale_array.shape[0], y + h + y_pad)
+        x_pad = int(w * padding)
+        y_pad = int(h * padding)
 
-    face_crop = grayscale_array[y1:y2, x1:x2]
-    face_resized = cv2.resize(face_crop, (128, 128)) #Resize cropped image to easier and smaller format
+        x1 = max(0, x - x_pad)
+        y1 = max(0, y - y_pad)
+        x2 = min(grayscale_array.shape[1], x + w + x_pad)
+        y2 = min(grayscale_array.shape[0], y + h + y_pad)
 
-    return face_resized.astype(np.uint8)
+        face_crop = grayscale_array[y1:y2, x1:x2]
+        face_resized = cv2.resize(face_crop, (128, 128)) #Resize cropped image to easier and smaller format
+
+        return face_resized.astype(np.uint8)
+    
+    except ValueError:
+        return 
 
 def flip_horizontal(pixel_array:np.ndarray) -> np.ndarray:
     return np.flip(pixel_array, 1).astype(np.uint8)

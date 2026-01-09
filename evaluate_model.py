@@ -15,15 +15,12 @@ def predict_face(img):
     model.load_state_dict(torch.load("model.pth", map_location=device))
     model.eval()
 
-    transform = transforms.Compose([
-        transforms.Grayscale(num_output_channels=1),
-        transforms.Resize((128, 128)),
-        transforms.ToTensor()
-    ])
-
     img = Image.open(img)
     rgb_array = np.asarray(img)
     grayscale_cropped = crop_image(convert_to_grayscale(rgb_array))
+
+    if not isinstance(grayscale_cropped, np.ndarray):
+        return
 
     tensor = torch.from_numpy(grayscale_cropped).float().unsqueeze(0).unsqueeze(0).to(device)
 

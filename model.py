@@ -8,12 +8,12 @@ import torch
 import numpy as np
 from torch import nn
 
-BATCH_SIZE = 32
-EPOCHS = 50
+BATCH_SIZE = 64
+EPOCHS = 5
 
 class Model(nn.Module):
 
-    def __init__(self, in_channels=1, num_classes=3):
+    def __init__(self, in_channels=1, num_classes=2):
         super(Model, self).__init__()
         self.net = nn.Sequential(
             nn.Conv2d(in_channels, 16, kernel_size=3, padding=1),
@@ -200,10 +200,9 @@ def main() -> None:
         val_acc = 100 * val_correct / val_total
         avg_val_loss = val_loss / len(val_loader)
 
-        if epoch % 10 == 0:
-            print(f"\nEpoch [{epoch}/{EPOCHS}]")
-            print(f"Train Loss: {avg_train_loss:.4f}, Train Acc: {train_acc:.2f}%")
-            print(f"Val Loss: {avg_val_loss:.4f}, Val Acc: {val_acc:.2f}%")
+        print(f"\nEpoch [{epoch}/{EPOCHS}]")
+        print(f"Train Loss: {avg_train_loss:.4f}, Train Acc: {train_acc:.2f}%")
+        print(f"Val Loss: {avg_val_loss:.4f}, Val Acc: {val_acc:.2f}%")
 
     model.eval()
     test_loss = 0
@@ -227,6 +226,7 @@ def main() -> None:
     print(f"\nFinal Test Loss: {avg_test_loss:.4f}, Test Accuracy: {test_acc:.2f}%")
     show_random_predictions(model=model, test_loader=test_loader, device=device, classes=classes, num_samples=9)
     torch.save(model.state_dict(), "model.pth")
+    print("Model saved to model.pth file")
 
 if __name__ == "__main__":
     main()
